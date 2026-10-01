@@ -1,0 +1,18 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Avalox.ViewModels"
+        xmlns:v="using:Avalox.Views"
+        x:Class="Avalox.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Avalox">
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type vm:RegAuthViewModel}">
+      <v:RegAuthView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ChatViewModel}">
+      <v:ChatView/>
+    </DataTemplate>
+  </Window.DataTemplates>
+  <ContentControl Content="{Binding CurrentViewModel}"/>
+</Window>

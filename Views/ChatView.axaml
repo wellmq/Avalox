@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Avalox.ViewModels"
+        x:Class="Avalox.Views.ChatView"
+  x:DataType="vm:ChatViewModel"
+  Background="{DynamicResource BgBrush}">
+  <Grid ColumnDefinitions="0.2*, Auto, *">
+    <!-- Меню чатов слева -->
+    <Grid Grid.Column="0" RowDefinitions="*, Auto">
+      <ListBox ItemsSource="{Binding ChatPreviews}" Background="{DynamicResource SurfaceBrush}" 
+        SelectedItem="{Binding CurrentChat, Mode=TwoWay}" Grid.Row="0">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel>
+              <TextBlock FontSize="22" Text="{Binding Login}"/>
+              <TextBlock Text="{Binding LastMessage}" Classes="Secondary"/>
+            </StackPanel>
+          </DataTemplate>
+       </ListBox.ItemTemplate>
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Margin" Value="0"/>
+          </Style>
+        </ListBox.Styles>
+      </ListBox>
+      <Border Grid.Row="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 1 0 0">
+        <TextBlock Text="{Binding TextResponse}" Classes="Secondary" FontSize="15"/>
+      </Border>
+    </Grid>
+    <GridSplitter Grid.Column="1"/>
+    <!-- Чат(сообщения) -->
+    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, *, Auto" Grid.Column="2">
+      <Grid Grid.Row="0" Grid.ColumnSpan="2" ColumnDefinitions="*, *">
+        <TextBlock Text="{Binding CurrentChatLogin}" FontSize="27" 
+          HorizontalAlignment="Right" Grid.Column="0"/> 
+        <TextBlock Text="{Binding CurrentChatOnlineStatus}" FontSize="20" 
+          HorizontalAlignment="Left" VerticalAlignment="Bottom" Classes="Secondary" Grid.Column="1"/>
+      </Grid>
+      <ListBox ItemsSource="{Binding CurrentChatMessages}" Background="{DynamicResource BgBrush}"
+        Classes="ChatPreview" Grid.Row="1" Grid.ColumnSpan="2"
+        ScrollViewer.VerticalScrollBarVisibility="Auto"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <Grid ColumnDefinitions="Auto, Auto, *">
+              <TextBlock Text="{Binding Sender}" Grid.Column="0" VerticalAlignment="Bottom"/>
+              <TextBlock Text="{Binding Date}" FontSize="12" Classes="Secondary" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+              <Border Background="{DynamicResource AccentBrush}" CornerRadius="5" Grid.Column="2" HorizontalAlignment="Right">
+               <TextBlock Text="{Binding Text}" Grid.Column="2" TextWrapping="Wrap"/>
+              </Border>
+            </Grid>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+      <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding CurrentDraft}"/>
+      <Button Grid.Row="2" Grid.Column="1" Content="send" Command="{Binding SendCommand}"/>
+    </Grid>
+  </Grid>
+</UserControl>

@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Avalox.ViewModels"
+        x:Class="Avalox.Views.RegAuthView"
+  x:DataType="vm:RegAuthViewModel"
+  Background="{DynamicResource BgBrush}">
+  <Panel>
+  <Border HorizontalAlignment="Center"
+    VerticalAlignment="Center"
+    Width="310"
+    BorderBrush="{DynamicResource BorderStrongBrush}"
+    BorderThickness="1"
+      CornerRadius="3"
+      Background = "{DynamicResource SurfaceBrush}"
+   >
+    <Grid RowDefinitions="*, *, *, *, *"
+      ColumnDefinitions="Auto, *, *">
+      <TextBlock Grid.Column="0" Text="login" VerticalAlignment="Center"/>
+      <TextBox Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Login, Mode=TwoWay}"/>
+      <TextBlock Grid.Row="1" Grid.Column="0" Text="password" VerticalAlignment="Center"/>
+      <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Password, Mode=TwoWay}"/>
+      <TextBlock Grid.Row="2" Grid.Column="0" Text="ip:port" VerticalAlignment="Center"/>
+      <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding IpAndPort, Mode=TwoWay}"/>
+      <Button Grid.Row="3" Grid.Column="0" Content="register" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"
+          HorizontalContentAlignment="Center" Command="{Binding RegisterCommand}"/>
+      <Button Grid.Row="4" Grid.Column="0" Content="auth" Grid.ColumnSpan="3" HorizontalAlignment="Stretch"
+          HorizontalContentAlignment="Center" Command="{Binding AuthCommand}"/>
+    </Grid>
+    </Border>
+    <Border HorizontalAlignment="Stretch"
+      VerticalAlignment="Bottom"
+      Background="{DynamicResource SurfaceBrush}">
+      <Grid ColumnDefinitions="*, *">
+        <TextBlock Classes="Secondary" Grid.Column="0" HorizontalAlignment="Left" Text="{Binding TextResponse}" FontSize="15"/>
+        <TextBlock Classes="Warning" Grid.Column="1" HorizontalAlignment="Right" Text="{Binding TextWarning}" FontSize="15"/>
+      </Grid>
+    </Border>
+  </Panel>
+</UserControl>
