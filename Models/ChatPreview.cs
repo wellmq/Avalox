@@ -1,3 +1,4 @@
+// Превью чата в списке диалогов
 public class ChatPreview
 {
     public string Login { get; set; }
@@ -8,4 +9,7 @@ public class ChatPreview
         Login = login;
         LastMessage = lastMessage;
     }
+
+    public override bool Equals(object? obj) => obj is ChatPreview other && other.Login == Login;
+    public override int GetHashCode() => Login.GetHashCode();
 }

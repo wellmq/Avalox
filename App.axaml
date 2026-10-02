@@ -3,76 +3,88 @@
              x:Class="Avalox.App"
              xmlns:local="using:Avalox"
              RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+  <!-- Тема приложения -->
+  <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+  <!-- Шаблоны представлений -->
   <Application.DataTemplates>
     <local:ViewLocator />
   </Application.DataTemplates>
+
+  <!-- Ресурсы приложения (цвета, кисти и т.д.) -->
   <Application.Resources>
-    <!-- фоны: окно -> карточка -> hover -> нажатие -->
+    <!-- Фоны -->
     <SolidColorBrush x:Key="BgBrush" Color="#0D0D0F" />
     <SolidColorBrush x:Key="SurfaceBrush" Color="#17171B" />
     <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#212127" />
     <SolidColorBrush x:Key="SurfaceActiveBrush" Color="#2A2A32" />
-    <!-- границы -->
+    <!-- Границы -->
     <SolidColorBrush x:Key="BorderBrush" Color="#2C2C34" />
     <SolidColorBrush x:Key="BorderStrongBrush" Color="#3E3E49" />
-    <!-- текст -->
+    <!-- Текст -->
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="#ECECF1" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A6A6B3" />
     <SolidColorBrush x:Key="TextDisabledBrush" Color="#62626E" />
-    <!-- акцент -->
+    <!-- Акцентные цвета -->
     <Color x:Key="AccentColor">#7A5AF8</Color>
     <Color x:Key="AccentHoverColor">#8E73FF</Color>
     <Color x:Key="AccentPressedColor">#6547DB</Color>
     <Color x:Key="OnAccentColor">#FFFFFF</Color>
-   <!-- акцент (кисти) -->
+    <!-- Акцентные кисти -->
     <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource AccentColor}" />
     <SolidColorBrush x:Key="AccentHoverBrush" Color="{DynamicResource AccentHoverColor}" />
     <SolidColorBrush x:Key="AccentPressedBrush" Color="{DynamicResource AccentPressedBrush}" />
     <SolidColorBrush x:Key="OnAccentBrush" Color="{DynamicResource OnAccentColor}" />
     <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{DynamicResource AccentColor}" />
-    <!-- selected -->
+    <!-- Выделение (selected) -->
     <SolidColorBrush x:Key="SystemControlHighlightListAccentLowBrush" Color="{DynamicResource AccentColor}"/>
-    <!-- pressed -->
+    <!-- Нажатие (pressed) -->
     <SolidColorBrush x:Key="SystemControlHighlightListAccentMediumBrush" Color="{DynamicResource AccentPressedColor}"/>
-    <!-- hover -->
+    <!-- Наведение (hover) -->
     <SolidColorBrush x:Key="SystemControlHighlightListAccentHighBrush" Color="{DynamicResource AccentHoverColor}"/> 
-    <!-- семантика -->
+    <!-- Семантические цвета -->
     <SolidColorBrush x:Key="SuccessBrush" Color="#3DD68C" />
     <SolidColorBrush x:Key="WarningBrush" Color="#F5A524" />
     <SolidColorBrush x:Key="ErrorBrush" Color="#F0475A" />
     <SolidColorBrush x:Key="SelectionBrush" Color="#7A5AF8" Opacity="0.25" />
   </Application.Resources>
-    <Application.Styles>
+
+  <!-- Стили приложения -->
+  <Application.Styles>
     <FluentTheme />
+    <!-- Стиль для TextBlock -->
     <Style Selector="TextBlock">
       <Setter Property="FontSize" Value="22"/>
       <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
       <Setter Property="Margin" Value="3"/>
     </Style>
+    <!-- Дополнительные стили для TextBlock -->
     <Style Selector="TextBlock.Secondary">
       <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
     </Style>
     <Style Selector="TextBlock.Warning">
       <Setter Property="Foreground" Value="{DynamicResource WarningBrush}"/>
     </Style>
+    <!-- Стиль для TextBox -->
     <Style Selector="TextBox">
       <Setter Property="FontSize" Value="22"/>
       <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
       <Setter Property="Margin" Value="3"/>
     </Style>
+    <!-- Стиль для Button -->
     <Style Selector="Button">
       <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
       <Setter Property="FontSize" Value="22"/>
       <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
       <Setter Property="Margin" Value="3"/>
     </Style>
+    <!-- Состояние hover для Button -->
     <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
     </Style>
+    <!-- Состояние pressed для Button -->
     <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
       <Setter Property="Background" Value="{DynamicResource AccentPressedBrush}" />
     </Style>
-    </Application.Styles>
+  </Application.Styles>
 </Application>

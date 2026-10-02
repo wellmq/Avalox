@@ -1,12 +1,18 @@
 using System;
 
+// Модель сообщения переписки
 public class Message
 {
     public long? Id { get; set; }
-    public string Sender { get; set; }
-    public string Receiver { get; set; }
-    public string Text { get; set; }
+    public string Sender { get; set; } = "";
+    public string Receiver { get; set; } = "";
+    public string Text { get; set; } = "";
     public DateTime? Date { get; set; }
+
+    // Флаг авторства для отображения в UI (справа/слева)
+    public bool IsMine { get; set; }
+
+    public Message() { }
 
     public Message(string receiver, string text)
     {

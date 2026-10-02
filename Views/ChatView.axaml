@@ -2,59 +2,173 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Avalox.ViewModels"
         x:Class="Avalox.Views.ChatView"
-  x:DataType="vm:ChatViewModel"
-  Background="{DynamicResource BgBrush}">
-  <Grid ColumnDefinitions="0.2*, Auto, *">
-    <!-- Меню чатов слева -->
-    <Grid Grid.Column="0" RowDefinitions="*, Auto">
-      <ListBox ItemsSource="{Binding ChatPreviews}" Background="{DynamicResource SurfaceBrush}" 
-        SelectedItem="{Binding CurrentChat, Mode=TwoWay}" Grid.Row="0">
+        x:DataType="vm:ChatViewModel"
+        Background="{DynamicResource BgBrush}">
+  <Grid ColumnDefinitions="0.25*, Auto, *">
+    <!-- Левая панель со списком чатов и полем создания нового чата -->
+    <Grid Grid.Column="0" RowDefinitions="Auto, *, Auto">
+      <!-- Поле ввода логина нового чата и кнопка создания -->
+      <Grid Grid.Row="0" Margin="4" ColumnDefinitions="*, Auto">
+        <TextBox Grid.Column="0"
+                 PlaceholderText="Логин чата"
+                 Text="{Binding NewChatLogin, Mode=TwoWay}">
+          <TextBox.KeyBindings>
+            <KeyBinding Gesture="Enter" Command="{Binding CreateChatCommand}"/>
+          </TextBox.KeyBindings>
+        </TextBox>
+        <Button Grid.Column="1"
+                Margin="4,0,0,0"
+                Content="Создать"
+                Command="{Binding CreateChatCommand}"/>
+      </Grid>
+
+      <!-- Список превью чатов -->
+      <ListBox ItemsSource="{Binding ChatPreviews}"
+               Background="{DynamicResource SurfaceBrush}"
+               SelectedItem="{Binding CurrentChat, Mode=TwoWay}"
+               Grid.Row="1">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <StackPanel>
-              <TextBlock FontSize="22" Text="{Binding Login}"/>
-              <TextBlock Text="{Binding LastMessage}" Classes="Secondary"/>
-            </StackPanel>
+            <Grid ColumnDefinitions="*, Auto">
+              <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock FontSize="18" Text="{Binding Login}"/>
+                <TextBlock Text="{Binding LastMessage}" Classes="Secondary" MaxLines="1"/>
+              </StackPanel>
+              <!-- Кнопка удаления чата -->
+              <Button Grid.Column="1"
+                      Content="✕"
+                      Padding="6,2"
+                      Margin="4,0,0,0"
+                      VerticalAlignment="Center"
+                      Command="{Binding $parent[UserControl].((vm:ChatViewModel)DataContext).DeleteChatCommand}"
+                      CommandParameter="{Binding}"/>
+            </Grid>
           </DataTemplate>
-       </ListBox.ItemTemplate>
+        </ListBox.ItemTemplate>
         <ListBox.Styles>
           <Style Selector="ListBoxItem">
-            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Padding" Value="4"/>
             <Setter Property="Margin" Value="0"/>
           </Style>
         </ListBox.Styles>
       </ListBox>
-      <Border Grid.Row="1" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0 1 0 0">
-        <TextBlock Text="{Binding TextResponse}" Classes="Secondary" FontSize="15"/>
+
+      <!-- Полоса статуса (ответ сервера) и кнопка выхода -->
+      <Border Grid.Row="2"
+              Background="{DynamicResource SurfaceBrush}"
+              BorderBrush="{DynamicResource BorderBrush}"
+              BorderThickness="0 1 0 0">
+        <Grid ColumnDefinitions="*, Auto" Margin="4">
+          <TextBlock Grid.Column="0"
+                     Text="{Binding TextResponse}"
+                     Classes="Secondary"
+                     FontSize="14"
+                     VerticalAlignment="Center"/>
+          <Button Grid.Column="1"
+                  Content="Выйти"
+                  Margin="4,0,0,0"
+                  Command="{Binding LogoutCommand}"/>
+        </Grid>
       </Border>
     </Grid>
+
+    <!-- Разделитель между списком чатов и окном чата -->
     <GridSplitter Grid.Column="1"/>
-    <!-- Чат(сообщения) -->
-    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, *, Auto" Grid.Column="2">
-      <Grid Grid.Row="0" Grid.ColumnSpan="2" ColumnDefinitions="*, *">
-        <TextBlock Text="{Binding CurrentChatLogin}" FontSize="27" 
-          HorizontalAlignment="Right" Grid.Column="0"/> 
-        <TextBlock Text="{Binding CurrentChatOnlineStatus}" FontSize="20" 
-          HorizontalAlignment="Left" VerticalAlignment="Bottom" Classes="Secondary" Grid.Column="1"/>
+
+    <!-- Основная область чата -->
+    <Grid ColumnDefinitions="*, Auto"
+          RowDefinitions="Auto, *, Auto"
+          Grid.Column="2">
+      <!-- Заголовок чата: логин собеседника и статус онлайн -->
+      <Grid Grid.Row="0" Grid.ColumnSpan="2" ColumnDefinitions="Auto, Auto">
+        <TextBlock Text="{Binding CurrentChatLogin}"
+                   FontSize="24"
+                   Margin="8,4"
+                   Grid.Column="0"/>
+        <TextBlock Text="{Binding CurrentChatOnlineStatus}"
+                   FontSize="16"
+                   Margin="4,0"
+                   VerticalAlignment="Center"
+                   Classes="Secondary"
+                   Grid.Column="1"/>
       </Grid>
-      <ListBox ItemsSource="{Binding CurrentChatMessages}" Background="{DynamicResource BgBrush}"
-        Classes="ChatPreview" Grid.Row="1" Grid.ColumnSpan="2"
-        ScrollViewer.VerticalScrollBarVisibility="Auto"
-        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+      <!-- Список сообщений -->
+      <ListBox x:Name="MessagesListBox"
+               ItemsSource="{Binding CurrentChatMessages}"
+               Background="{DynamicResource BgBrush}"
+               Grid.Row="1"
+               Grid.ColumnSpan="2"
+               ScrollViewer.VerticalScrollBarVisibility="Auto"
+               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <Grid ColumnDefinitions="Auto, Auto, *">
-              <TextBlock Text="{Binding Sender}" Grid.Column="0" VerticalAlignment="Bottom"/>
-              <TextBlock Text="{Binding Date}" FontSize="12" Classes="Secondary" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-              <Border Background="{DynamicResource AccentBrush}" CornerRadius="5" Grid.Column="2" HorizontalAlignment="Right">
-               <TextBlock Text="{Binding Text}" Grid.Column="2" TextWrapping="Wrap"/>
+            <Grid>
+              <Border CornerRadius="8"
+                      Padding="10,6"
+                      Margin="4,3"
+                      MaxWidth="480"
+                      Classes.Mine="{Binding IsMine}"
+                      Classes.Other="{Binding !IsMine}">
+                <StackPanel>
+                  <TextBlock Text="{Binding Sender}"
+                             FontSize="12"
+                             FontWeight="SemiBold"
+                             Foreground="{DynamicResource AccentHoverBrush}"
+                             IsVisible="{Binding !IsMine}"
+                             Margin="0,0,0,2"/>
+                  <TextBlock Text="{Binding Text}"
+                             TextWrapping="Wrap"
+                             FontSize="15"
+                             Foreground="{DynamicResource TextPrimaryBrush}"/>
+                  <TextBlock Text="{Binding Date, StringFormat='{}{0:HH:mm}'}"
+                             FontSize="11"
+                             Classes="Secondary"
+                             HorizontalAlignment="Right"
+                             Margin="4,2,0,0"/>
+                </StackPanel>
               </Border>
             </Grid>
           </DataTemplate>
         </ListBox.ItemTemplate>
+        <ListBox.Styles>
+          <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="2,1"/>
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+          </Style>
+          <Style Selector="Border.Mine">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+          </Style>
+          <Style Selector="Border.Other">
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Background" Value="{DynamicResource SurfaceHoverBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+          </Style>
+        </ListBox.Styles>
       </ListBox>
-      <TextBox Grid.Row="2" Grid.Column="0" Text="{Binding CurrentDraft}"/>
-      <Button Grid.Row="2" Grid.Column="1" Content="send" Command="{Binding SendCommand}"/>
+
+      <!-- Поле ввода нового сообщения -->
+      <TextBox Grid.Row="2"
+               Grid.Column="0"
+               Text="{Binding CurrentDraft}">
+        <TextBox.KeyBindings>
+          <KeyBinding Gesture="Enter" Command="{Binding SendCommand}"/>
+        </TextBox.KeyBindings>
+      </TextBox>
+      
+      <!-- Кнопка отправки -->
+      <Button Grid.Row="2"
+              Grid.Column="1"
+              Content="Отправить"
+              Command="{Binding SendCommand}"/>
     </Grid>
   </Grid>
 </UserControl>

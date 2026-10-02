@@ -6,13 +6,18 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="Avalox">
+  <!-- Шаблоны представлений для разных ViewModel -->
   <Window.DataTemplates>
+    <!-- Шаблон для экрана регистрации/авторизации -->
     <DataTemplate DataType="{x:Type vm:RegAuthViewModel}">
       <v:RegAuthView/>
     </DataTemplate>
+    <!-- Шаблон для основного чата -->
     <DataTemplate DataType="{x:Type vm:ChatViewModel}">
       <v:ChatView/>
     </DataTemplate>
   </Window.DataTemplates>
+
+  <!-- Текущее представление, меняется в MainViewModel -->
   <ContentControl Content="{Binding CurrentViewModel}"/>
 </Window>
