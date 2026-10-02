@@ -6,39 +6,39 @@ using System;
 
 namespace Avalox.ViewModels;
 
-// ViewModel экрана регистрации и входа
+// ViewModel for user registration and authentication
 public partial class RegAuthViewModel : ViewModelBase
 {
-    // Логин (до 32 символов)
+    // Username (up to 32 characters)
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RegisterCommand))]
     [NotifyCanExecuteChangedFor(nameof(AuthCommand))]
     private string login = "";
 
-    // Пароль (до 32 символов)
+    // Password (up to 32 characters)
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RegisterCommand))]
     [NotifyCanExecuteChangedFor(nameof(AuthCommand))]
     private string password = "";
 
-    // Адрес сервера в формате IP:Port (по умолчанию 127.0.0.1:7777)
+    // Server address in IP:Port format (defaults to 127.0.0.1:7777)
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RegisterCommand))]
     [NotifyCanExecuteChangedFor(nameof(AuthCommand))]
     private string ipAndPort = "127.0.0.1:7777";
 
-    // Сообщение об ответе сервера в нижней строке
+    // Server response message on status bar
     [ObservableProperty]
     private string textResponse = "";
 
-    // Предупреждение / ошибка валидации в нижней строке
+    // Input validation warning message
     [ObservableProperty]
     private string textWarning = "";
 
-    // Сетевое подключение к серверу
+    // TCP connection to server
     private Connection connection;
 
-    // Делегат для перехода в ChatViewModel
+    // View navigation callback to switch to ChatViewModel
     private Action<ViewModelBase> setCurrentViewModel;
 
     public RegAuthViewModel(Action<ViewModelBase> setCurrentViewModelCallback)
@@ -47,25 +47,25 @@ public partial class RegAuthViewModel : ViewModelBase
         setCurrentViewModel = setCurrentViewModelCallback;
     }
 
-    // Попытка TCP-подключения к серверу
+    // Connect to server via TCP
     private async Task<bool> connect()
     {
         if (!IPEndPoint.TryParse(IpAndPort, out IPEndPoint? ip) || !IpAndPort.Contains(":"))
         {
-            TextWarning = "неверный ip:порт";
+            TextWarning = "invalid ip:port";
             return false;
         }
 
         bool result = await connection.TryConnect(ip);
         if (!result)
         {
-            TextWarning = "не удалось подключиться";
+            TextWarning = "failed to connect";
             return false;
         }
         return true;
     }
 
-    // Проверка заполненности полей и длины перед отправкой
+    // Validate inputs before sending command
     private bool canAnything()
     {
         bool isNotEmpty = !string.IsNullOrWhiteSpace(Login)
@@ -78,21 +78,21 @@ public partial class RegAuthViewModel : ViewModelBase
         return isNotEmpty && isIpCorrect && isLoginOrPasswordNotTooLong;
     }
 
-    // Очистка текста ошибок на форме
+    // Clear form error messages
     private void cleanScreenText()
     {
         TextWarning = "";
         TextResponse = "";
     }
 
-    // Вывод статуса ответа сервера
+    // Display formatted server response
     private void SetTextResponse(Response response)
     {
         string status = (response.IsSuccessful) ? "ok" : "fail";
         TextResponse = $"{status}: {response.Message}";
     }
 
-    // Регистрация нового аккаунта (тип 0)
+    // Register new user account (type 0)
     [RelayCommand(CanExecute = nameof(canAnything))]
     public async Task Register()
     {
@@ -109,7 +109,7 @@ public partial class RegAuthViewModel : ViewModelBase
         SetTextResponse(response);
     }
 
-    // Авторизация (тип 1) и переход в чат
+    // Authenticate user (type 1) and navigate to ChatView
     [RelayCommand(CanExecute = nameof(canAnything))]
     public async Task Auth()
     {

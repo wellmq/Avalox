@@ -1,4 +1,4 @@
-// Превью чата в списке диалогов
+// Sidebar chat preview item
 public class ChatPreview
 {
     public string Login { get; set; }

@@ -4,9 +4,9 @@
         x:Class="Avalox.Views.RegAuthView"
         x:DataType="vm:RegAuthViewModel"
         Background="{DynamicResource BgBrush}">
-  <!-- Корневой контейнер -->
+  <!-- Root container -->
   <Panel>
-    <!-- Основная форма регистрации/авторизации -->
+    <!-- Main registration/authorization form -->
     <Border HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Width="310"
@@ -16,21 +16,21 @@
             Background="{DynamicResource SurfaceBrush}">
       <Grid RowDefinitions="*, *, *, *, *"
             ColumnDefinitions="Auto, *, *">
-        <!-- Поле логина -->
+        <!-- Login field -->
         <TextBlock Grid.Column="0" Text="login" VerticalAlignment="Center"/>
         <TextBox Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Login, Mode=TwoWay}"/>
-        <!-- Поле пароля -->
+        <!-- Password field -->
         <TextBlock Grid.Row="1" Grid.Column="0" Text="password" VerticalAlignment="Center"/>
         <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Password, Mode=TwoWay}" PasswordChar="*"/>
-        <!-- Поле IP:Port -->
+        <!-- IP:Port field -->
         <TextBlock Grid.Row="2" Grid.Column="0" Text="ip:port" VerticalAlignment="Center"/>
         <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding IpAndPort, Mode=TwoWay}"/>
-        <!-- Кнопка регистрации -->
+        <!-- Register button -->
         <Button Grid.Row="3" Grid.Column="0" Content="register" Grid.ColumnSpan="3"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
                 Command="{Binding RegisterCommand}"/>
-        <!-- Кнопка авторизации -->
+        <!-- Auth button -->
         <Button Grid.Row="4" Grid.Column="0" Content="auth" Grid.ColumnSpan="3"
                 HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
@@ -38,7 +38,7 @@
       </Grid>
     </Border>
 
-    <!-- Нижняя панель для вывода сообщений/предупреждений -->
+    <!-- Bottom status bar for responses and warnings -->
     <Border HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
             Background="{DynamicResource SurfaceBrush}">

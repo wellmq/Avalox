@@ -1,4 +1,4 @@
-// Учетные данные пользователя
+// User authentication credentials
 public class Credentials
 {
     public string Login { get; init; }

@@ -1,4 +1,4 @@
-// Ответ сервера на запрос
+// Server response payload
 public class Response
 {
     public bool IsSuccessful { get; set; }

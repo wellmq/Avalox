@@ -1,132 +1,136 @@
-# 💬 Avalox Client
-
 <div align="center">
 
-![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
-![.NET 10](https://img.shields.io/badge/.NET_10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
-![Avalonia UI](https://img.shields.io/badge/Avalonia_UI-12.1-8B5CF6?style=for-the-badge&logo=avalonia&logoColor=white)
-![MVVM](https://img.shields.io/badge/MVVM-CommunityToolkit-blue?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+<img src="Assets/avalox.png" alt="Avalox Logo" width="128" height="128" />
 
-**Кроссплатформенный настольный TCP-мессенджер на C#, Avalonia UI и .NET 10.**
+# Avalox Client
 
-[Возможности](#-основные-возможности) • [Стек технологий](#-стек-технологий) • [Архитектура](#-архитектура) • [Сетевой протокол](#-сетевой-протокол) • [Быстрый старт](#-быстрый-старт) • [Лицензия](#-лицензия)
+[![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)](https://dotnet.microsoft.com/)
+[![.NET 10](https://img.shields.io/badge/.NET_10.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/download/dotnet/10.0)
+[![Avalonia UI](https://img.shields.io/badge/Avalonia_UI-12.1-8B5CF6?style=for-the-badge&logo=avalonia&logoColor=white)](https://avaloniaui.net/)
+[![MVVM](https://img.shields.io/badge/MVVM-CommunityToolkit-blue?style=for-the-badge)](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+**Cross-platform desktop TCP messaging client built with C#, Avalonia UI, and .NET 10.**
+
+🌐 **English** • [Русский](README.ru.md)
+
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#-architecture) • [Network Protocol](#-network-protocol) • [Getting Started](#-getting-started) • [License](#-license)
 
 </div>
 
 ---
 
-## ✨ Основные возможности
+## ✨ Features
 
-- 🎨 **Современный UI**: Тёмная неоновая тема с акцентными фиолетовыми тонами, отзывчивые hover-эффекты и продуманная типографика на шрифте *Inter*.
-- 💬 **Диалоги и чаты**:
-  - Сайдбар со списком всех чатов и превью последних сообщений.
-  - Мгновенный поиск и создание новых диалогов по логину.
-  - Удаление чатов с локальной очисткой переписки.
-  - Разделение сообщений на «свои» (справа, акцентные) и «чужие» (слева) со штампами времени `HH:mm`.
-- 🟢 **Онлайн-статусы**: Отслеживание активности собеседников в реальном времени (`online` / `offline` / `нет связи`).
-- 🛡️ **Надёжная сеть на `System.Threading.Channels`**:
-  - Асинхронный TCP-клиент на сокетах.
-  - Изолированная очередь запросов исключает гонки потоков и разрывы пакетов в сокете при параллельной отправке сообщений и фоновом опросе сервера.
-  - Информативная обработка потери связи с выводом диагностических сообщений.
-- 🔐 **Авторизация и регистрация**: Подключение к любому хосту и порту (`ip:port`).
-- 🚪 **Корректный логаут**: Безопасная утилизация сетевых ресурсов (`IDisposable`), отмена фоновых задач и сброс состояния.
+- 🎨 **Interface**: Dark theme with purple accents (`#7A5AF8`) and the *Inter* font.
+- 💬 **Conversations & Messaging**:
+  - Sidebar with active chat previews and last received messages.
+  - Quick chat creation by username.
+  - Chat removal with local history cleanup.
+  - Message bubble styling with distinction between sent (accent, right-aligned) and received (left-aligned) messages, accompanied by timestamps.
+- 🟢 **Live Online Presence**: Real-time status indicators tracking whether a conversation partner is `online`, `offline`, or disconnected.
+- 🛡️ **Networking**:
+  - Asynchronous TCP client using sockets.
+  - Outgoing requests are queued via `Channels` so packets don't overlap.
+  - Status bar notifications if connection drops.
+- 🔐 **Authentication & Registration**: Connect to any server address (`ip:port`).
+- 🚪 **Logout**: Closes the connection and returns to the login screen.
 
 ---
 
-## 🛠 Стек технологий
+## 🛠 Tech Stack
 
-- **Платформа**: [.NET 10.0](https://dotnet.microsoft.com/) (C# 13)
-- **GUI-фреймворк**: [Avalonia UI 12.1](https://avaloniaui.net/) (кроссплатформенный: Linux, Windows, macOS)
-- **Архитектурный паттерн**: MVVM (Model-View-ViewModel)
+- **Platform**: [.NET 10.0](https://dotnet.microsoft.com/) (C# 13)
+- **UI Framework**: [Avalonia UI 12.1](https://avaloniaui.net/) (Linux, Windows, macOS)
+- **Architecture**: MVVM (Model-View-ViewModel)
 - **MVVM Toolkit**: `CommunityToolkit.Mvvm 8.4` (Source Generators, `ObservableProperty`, `RelayCommand`)
-- **Сетевой стек**: `System.Net.Sockets.TcpClient`, `System.Threading.Channels`, `System.Text.Json`
+- **Networking**: `System.Net.Sockets.TcpClient`, `System.Threading.Channels`, `System.Text.Json`
 
 ---
 
-## 🏛 Архитектура проекта
+## 🏛 Architecture
 
 ```
 Avalox/
-├── Assets/                 # Иконки и графические ресурсы
-├── Models/                 # DTO и модели данных
-│   ├── ChatPreview.cs      # Превью чата в сайдбаре
-│   ├── Connection.cs       # Асинхронный TCP-клиент на каналах
-│   ├── Credentials.cs      # Учётные данные (логин/пароль)
-│   ├── LastMessageInfo.cs  # Запрос синхронизации сообщений
-│   ├── Message.cs          # Сообщение чата
-│   ├── Request.cs          # Сетевой пакет
-│   ├── Response.cs         # Ответ от сервера
-│   └── TargetUser.cs       # Запрос статуса пользователя
-├── ViewModels/             # Презентационная логика
-│   ├── ChatViewModel.cs    # Логика мессенджера и поллинга
-│   ├── MainViewModel.cs    # Управление экранами приложения
-│   ├── RegAuthViewModel.cs # Логика входа и регистрации
-│   └── ViewModelBase.cs    # Базовый класс для ObservableObject
-├── Views/                  # Разметка XAML и Code-Behind
-│   ├── ChatView.axaml      # Основное окно чата и списка диалогов
-│   ├── MainWindow.axaml    # Главное окно контейнера
-│   └── RegAuthView.axaml   # Экран авторизации / регистрации
-├── App.axaml               # Глобальные стили, темы и кисти
-├── Program.cs              # Точка входа инициализации Avalonia
-└── ViewLocator.cs          # Автоматическое сопоставление View и ViewModel
+├── Assets/                 # Application icon (PNG / multi-resolution ICO)
+├── Models/                 # DTOs and network models
+│   ├── ChatPreview.cs      # Sidebar chat preview model
+│   ├── Connection.cs       # Channel-based async TCP client
+│   ├── Credentials.cs      # Login / registration credentials
+│   ├── LastMessageInfo.cs  # Message synchronization request
+│   ├── Message.cs          # Chat message DTO
+│   ├── Request.cs          # Internal request packet wrapper
+│   ├── Response.cs         # Unified server response DTO
+│   └── TargetUser.cs       # Online status query DTO
+├── ViewModels/             # Presentation logic
+│   ├── ChatViewModel.cs    # Active chat & background polling logic
+│   ├── MainViewModel.cs    # View navigation manager
+│   ├── RegAuthViewModel.cs # Authentication & registration logic
+│   └── ViewModelBase.cs    # Base ObservableObject wrapper
+├── Views/                  # XAML views and code-behind
+│   ├── ChatView.axaml      # Main messenger and sidebar UI
+│   ├── MainWindow.axaml    # Window container with custom icon
+│   └── RegAuthView.axaml   # Authentication screen
+├── App.axaml               # Global theme, brushes, and control styles
+├── Program.cs              # Avalonia application entry point
+└── ViewLocator.cs          # Automatic ViewModel-to-View resolver
 ```
 
 ---
 
-## 📡 Сетевой протокол
+## 📡 Network Protocol
 
-Клиент взаимодействует с сервером [AvaloxServer](https://github.com/wellmq/AvaloxServer) по бинарному протоколу поверх TCP с фреймингом:
+The client communicates with [AvaloxServer](https://github.com/wellmq/AvaloxServer) over a binary-framed TCP protocol:
 
-$$\text{[ 1 байт: Type ]} + \text{[ 4 байта: Int32 Payload Length ]} + \text{[ N байт: JSON Payload ]}$$
+$$\text{[ 1 byte: Type ]} + \text{[ 4 bytes: Int32 Payload Length ]} + \text{[ N bytes: JSON Payload ]}$$
 
-### Таблица маршрутизации:
-| Код | Направление | Назначение | Payload |
+### Packet Routing Table:
+| Code | Direction | Purpose | Payload |
 |:---:|:---:|:---|:---|
-| `0` | Client ➔ Server | Регистрация | `Credentials` (логин, пароль) |
-| `1` | Client ➔ Server | Авторизация | `Credentials` (логин, пароль) |
-| `2` | Client ➔ Server | Отправка сообщения | `Message` (получатель, текст) |
-| `3` | Client ➔ Server | Запрос новых сообщений | `LastMessageInfo` (ID последнего сообщения) |
-| `4` | Client ➔ Server | Запрос онлайн-статуса | `TargetUser` (логин собеседника) |
+| `0` | Client ➔ Server | Registration | `Credentials` (login, password) |
+| `1` | Client ➔ Server | Authentication | `Credentials` (login, password) |
+| `2` | Client ➔ Server | Send Message | `Message` (receiver, text) |
+| `3` | Client ➔ Server | Fetch New Messages | `LastMessageInfo` (ID of last known message) |
+| `4` | Client ➔ Server | Query Online Status | `TargetUser` (target username) |
 
 ---
 
-## 🚀 Быстрый старт
+## 🚀 Getting Started
 
-### Требования
+### Prerequisites
 - [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
 
-### Сборка и запуск
-1. Клонируйте репозиторий:
+### Clone & Run
+1. Clone the repository:
    ```bash
    git clone https://github.com/wellmq/Avalox.git
    cd Avalox
    ```
 
-2. Соберите проект:
+2. Build the project:
    ```bash
    dotnet build
    ```
 
-3. Запустите клиент:
+3. Launch the application:
    ```bash
    dotnet run
    ```
 
-### Подключение к серверу
-При запуске приложения на экране входа укажите:
-- **Логин** и **пароль**
-- **Адрес сервера** в поле `ip:port` (например, `127.0.0.1:7777`)
-- Нажмите **register** для создания аккаунта или **auth** для входа.
+### Connecting to Server
+On the initial screen:
+- Enter your **username** and **password**.
+- Specify the server address in the `ip:port` field (e.g., `127.0.0.1:7777`).
+- Click **register** to create an account, or **auth** to sign in.
 
 ---
 
-## 🔗 Связанный проект
+## 🔗 Related Project
 
-- **Серверная часть**: [AvaloxServer](https://github.com/wellmq/AvaloxServer) — асинхронный многопоточный TCP-сервер с базой данных SQLite и хешированием паролей PBKDF2.
+- **Server**: [AvaloxServer](https://github.com/wellmq/AvaloxServer) — Server component with SQLite storage and password hashing.
 
 ---
 
-## 📄 Лицензия
+## 📄 License
 
-Проект распространяется под лицензией [MIT](LICENSE).
+This project is licensed under the [MIT License](LICENSE).

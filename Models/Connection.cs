@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using System.Threading.Channels;
 using System.Threading;
 
-// Подключение к серверу
+// Client TCP connection and request dispatching
 public class Connection : IDisposable
 {
-    private const int MaxPacketSize = 5 * 1024 * 1024; // 5 МБ
+    private const int MaxPacketSize = 5 * 1024 * 1024; // 5 MB
 
     private TcpClient? client;
     private NetworkStream? networkStream;
@@ -35,7 +35,7 @@ public class Connection : IDisposable
         Task.Run(ProcessRequestsAsync);
     }
 
-    // Обработка очереди запросов
+    // Process queued requests sequentially
     private async Task ProcessRequestsAsync()
     {
         try
@@ -47,15 +47,15 @@ public class Connection : IDisposable
         }
         catch (OperationCanceledException)
         {
-            // Отмена при вызове Dispose
+            // Cancelled on Dispose
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка отправки: {ex.Message}");
+            Console.WriteLine($"Send error: {ex.Message}");
         }
     }
 
-    // Подключение к серверу по IP и порту
+    // Connect to server by IP and port
     public async Task<bool> TryConnect(IPEndPoint ipEndPoint)
     {
         client = new TcpClient();
@@ -76,7 +76,7 @@ public class Connection : IDisposable
         return client.Connected;
     }
 
-    // Отправка запроса: [тип] + [длина] + [JSON]
+    // Send request packet: [Type: 1 byte] + [Length: 4 bytes] + [JSON Payload]
     public async Task<Response> MakeRequest(int type, object obj)
     {
         try
@@ -91,11 +91,11 @@ public class Connection : IDisposable
             Request request = new Request(bytes);
             if (!requestChannel.Writer.TryWrite(request))
             {
-                return new Response { IsSuccessful = false, Message = "Соединение закрыто" };
+                return new Response { IsSuccessful = false, Message = "Connection closed" };
             }
 
             await request.TaskCS.Task;
-            return request.Response ?? new Response { IsSuccessful = false, Message = "Нет ответа" };
+            return request.Response ?? new Response { IsSuccessful = false, Message = "No response" };
         }
         catch (Exception ex)
         {
@@ -103,7 +103,7 @@ public class Connection : IDisposable
         }
     }
 
-    // Запись запроса в поток и чтение ответа
+    // Write request to network stream and read response packet
     private async Task SendRequestAsync(Request request)
     {
         try
@@ -112,21 +112,21 @@ public class Connection : IDisposable
             {
                 await networkStream.WriteAsync(request.Bytes, cts.Token);
 
-                // Читаем тип ответа
+                // Read response type
                 byte[] byteType = new byte[1];
                 await networkStream.ReadExactlyAsync(byteType, cts.Token);
 
-                // Читаем длину ответа
+                // Read response length
                 byte[] byteLength = new byte[4];
                 await networkStream.ReadExactlyAsync(byteLength, cts.Token);
                 int length = BitConverter.ToInt32(byteLength, 0);
 
                 if (length < 0 || length > MaxPacketSize)
                 {
-                    throw new InvalidOperationException($"Недопустимая длина пакета: {length}");
+                    throw new InvalidOperationException($"Invalid packet length: {length}");
                 }
 
-                // Читаем тело ответа
+                // Read response payload
                 byte[] byteObj = new byte[length];
                 await networkStream.ReadExactlyAsync(byteObj, cts.Token);
                 string jsonObj = Encoding.UTF8.GetString(byteObj);
@@ -134,7 +134,7 @@ public class Connection : IDisposable
             }
             else
             {
-                request.Response = new Response { IsSuccessful = false, Message = "Нет подключения" };
+                request.Response = new Response { IsSuccessful = false, Message = "Not connected" };
             }
         }
         catch (Exception ex)

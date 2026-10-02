@@ -11,38 +11,38 @@ using Avalonia.Threading;
 
 namespace Avalox.ViewModels;
 
-// Экран переписки
+// Main chat screen ViewModel
 public partial class ChatViewModel : ViewModelBase
 {
-    // Список чатов слева
+    // Left sidebar chat previews
     [ObservableProperty]
     private ObservableCollection<ChatPreview> chatPreviews = [];
 
-    // Выбранный чат
+    // Currently selected chat
     [ObservableProperty]
     private ChatPreview? currentChat;
 
-    // Сообщения текущего чата
+    // Messages in the active chat
     [ObservableProperty]
     private ObservableCollection<Message> currentChatMessages = [];
 
-    // Логин собеседника
+    // Active conversation partner username
     [ObservableProperty]
     private string currentChatLogin = "";
 
-    // Статус собеседника
+    // Active conversation partner online status
     [ObservableProperty]
     private string currentChatOnlineStatus = "";
 
-    // Текст сообщения в поле ввода
+    // Message draft input text
     [ObservableProperty]
     private string currentDraft = "";
 
-    // Сообщение в строке статуса
+    // Status bar response message
     [ObservableProperty]
     private string textResponse = "";
 
-    // Логин для создания нового чата
+    // New chat target username
     [ObservableProperty]
     private string newChatLogin = "";
 
@@ -61,7 +61,7 @@ public partial class ChatViewModel : ViewModelBase
 
         CancellationToken token = cancellationTokenSource.Token;
 
-        // Опрос сервера каждые 500 мс
+        // Background polling for messages and statuses every 500 ms
         _ = Task.Run(async () =>
         {
             while (!token.IsCancellationRequested)
@@ -78,13 +78,13 @@ public partial class ChatViewModel : ViewModelBase
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Ошибка опроса: {ex.Message}");
+                    Console.WriteLine($"Polling error: {ex.Message}");
                 }
             }
         }, token);
     }
 
-    // Выбор чата из списка
+    // Chat selection handler
     partial void OnCurrentChatChanged(ChatPreview? oldValue, ChatPreview? newValue)
     {
         if (newValue == null) return;
@@ -93,7 +93,7 @@ public partial class ChatViewModel : ViewModelBase
         updateCurrentChatMessages();
     }
 
-    // Получение новых сообщений
+    // Fetch incoming messages from server
     private async Task requestNewMessages()
     {
         LastMessageInfo lastMessageInfo = new LastMessageInfo(lastMessageId);
@@ -104,8 +104,8 @@ public partial class ChatViewModel : ViewModelBase
             Dispatcher.UIThread.Post(() =>
             {
                 TextResponse = !connection.GetConnectionStatus()
-                    ? "Потеряна связь с сервером..."
-                    : $"Ошибка сервера: {response.Message}";
+                    ? "Connection to server lost..."
+                    : $"Server error: {response.Message}";
             });
             return;
         }
@@ -128,13 +128,13 @@ public partial class ChatViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка парсинга сообщений: {ex.Message}");
+            Console.WriteLine($"Message parsing error: {ex.Message}");
         }
 
         Dispatcher.UIThread.Post(() => setTextResponse(response));
     }
 
-    // Фильтрация сообщений для выбранного собеседника
+    // Filter messages for the active conversation
     private void updateCurrentChatMessages()
     {
         if (string.IsNullOrEmpty(CurrentChatLogin))
@@ -157,7 +157,7 @@ public partial class ChatViewModel : ViewModelBase
         CurrentChatMessages = new ObservableCollection<Message>(filtered);
     }
 
-    // Обновление превью и последних сообщений в списке чатов
+    // Update previews and last messages in the sidebar
     private void updateChatPreviews()
     {
         var lastMessages = messages
@@ -189,7 +189,7 @@ public partial class ChatViewModel : ViewModelBase
         }
     }
 
-    // Проверка онлайн-статуса
+    // Query active partner online status
     private async Task requestOnlineStatus()
     {
         if (string.IsNullOrWhiteSpace(CurrentChatLogin)) return;
@@ -200,7 +200,7 @@ public partial class ChatViewModel : ViewModelBase
         {
             if (!response.IsSuccessful)
             {
-                CurrentChatOnlineStatus = "нет связи";
+                CurrentChatOnlineStatus = "offline";
             }
             else
             {
@@ -215,7 +215,7 @@ public partial class ChatViewModel : ViewModelBase
         TextResponse = $"{status}: {response.Message}";
     }
 
-    // Отправка сообщения
+    // Send chat message
     [RelayCommand]
     public async Task Send()
     {
@@ -230,7 +230,7 @@ public partial class ChatViewModel : ViewModelBase
         {
             if (!response.IsSuccessful)
             {
-                TextResponse = $"Ошибка отправки: {response.Message}";
+                TextResponse = $"Send error: {response.Message}";
                 if (string.IsNullOrEmpty(CurrentDraft))
                 {
                     CurrentDraft = textToSend;
@@ -243,7 +243,7 @@ public partial class ChatViewModel : ViewModelBase
         });
     }
 
-    // Создание чата
+    // Create new chat
     [RelayCommand]
     public void CreateChat()
     {
@@ -263,7 +263,7 @@ public partial class ChatViewModel : ViewModelBase
         NewChatLogin = "";
     }
 
-    // Удаление чата
+    // Delete chat from list
     [RelayCommand]
     public void DeleteChat(ChatPreview? chat)
     {
@@ -287,7 +287,7 @@ public partial class ChatViewModel : ViewModelBase
         }
     }
 
-    // Выход из профиля
+    // Logout and return to auth view
     [RelayCommand]
     public void Logout()
     {

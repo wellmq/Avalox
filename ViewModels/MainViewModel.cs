@@ -2,20 +2,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Avalox.ViewModels;
 
-// Корневая ViewModel приложения для переключения между экранами
+// Root ViewModel managing navigation between views
 public partial class MainViewModel : ViewModelBase
 {
-    // Текущий активный экран
+    // Currently active ViewModel
     [ObservableProperty]
     private ViewModelBase currentViewModel;
 
     public MainViewModel()
     {
-        // Стартовый экран — вход / регистрация
+        // Initial view is authentication / registration
         currentViewModel = new RegAuthViewModel(setCurrentViewModel);
     }
 
-    // Смена текущего экрана
+    // Switch current active view
     private void setCurrentViewModel(ViewModelBase viewModel)
     {
         CurrentViewModel = viewModel;

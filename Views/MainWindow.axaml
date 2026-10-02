@@ -4,20 +4,20 @@
         xmlns:v="using:Avalox.Views"
         x:Class="Avalox.Views.MainWindow"
         x:DataType="vm:MainViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/avalox.ico"
         Title="Avalox">
-  <!-- Шаблоны представлений для разных ViewModel -->
+  <!-- View templates for different ViewModels -->
   <Window.DataTemplates>
-    <!-- Шаблон для экрана регистрации/авторизации -->
+    <!-- Template for registration/authorization view -->
     <DataTemplate DataType="{x:Type vm:RegAuthViewModel}">
       <v:RegAuthView/>
     </DataTemplate>
-    <!-- Шаблон для основного чата -->
+    <!-- Template for main chat view -->
     <DataTemplate DataType="{x:Type vm:ChatViewModel}">
       <v:ChatView/>
     </DataTemplate>
   </Window.DataTemplates>
 
-  <!-- Текущее представление, меняется в MainViewModel -->
+  <!-- Current view bound to MainViewModel -->
   <ContentControl Content="{Binding CurrentViewModel}"/>
 </Window>

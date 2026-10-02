@@ -1,4 +1,4 @@
-// Запрос онлайн-статуса целевого пользователя
+// Target user online status query
 public class TargetUser
 {
     public string Login { get; init; }

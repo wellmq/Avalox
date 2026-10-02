@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Avalox.Views;
 
-// Code-behind для ChatView с автоскроллом к последнему сообщению
+// Code-behind for ChatView with auto-scroll to the latest message
 public partial class ChatView : UserControl
 {
     private ChatViewModel? _viewModel;
@@ -17,7 +17,7 @@ public partial class ChatView : UserControl
         InitializeComponent();
     }
 
-    // Подписка на смену сообщений при изменении DataContext
+    // Subscribe to message updates when DataContext changes
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
@@ -36,7 +36,7 @@ public partial class ChatView : UserControl
         }
     }
 
-    // Обработка обновления списка сообщений
+    // Handle messages collection change
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ChatViewModel.CurrentChatMessages))
@@ -45,7 +45,7 @@ public partial class ChatView : UserControl
         }
     }
 
-    // Прокрутка списка сообщений в самый низ
+    // Scroll message list to the bottom
     private void ScrollToLastMessage()
     {
         Dispatcher.UIThread.Post(() =>

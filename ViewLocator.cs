@@ -6,7 +6,7 @@ using Avalox.ViewModels;
 
 namespace Avalox;
 
-// Поиск соответствующей View для переданной ViewModel
+// View locator resolving View instances for given ViewModel types
 [RequiresUnreferencedCode(
     "Default implementation of ViewLocator involves reflection which may be trimmed away.",
     Url = "https://docs.avaloniaui.net/docs/concepts/view-locator")]

@@ -1,4 +1,4 @@
-// Запрос новых сообщений после LastMessageId
+// Request for messages newer than LastMessageId
 public class LastMessageInfo
 {
     public long LastMessageId { get; set; }

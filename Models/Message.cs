@@ -1,6 +1,6 @@
 using System;
 
-// Модель сообщения переписки
+// Chat message model
 public class Message
 {
     public long? Id { get; set; }
@@ -9,7 +9,7 @@ public class Message
     public string Text { get; set; } = "";
     public DateTime? Date { get; set; }
 
-    // Флаг авторства для отображения в UI (справа/слева)
+    // Ownership flag for UI alignment (sent / received)
     public bool IsMine { get; set; }
 
     public Message() { }

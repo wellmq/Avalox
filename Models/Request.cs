@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-// Элемент очереди запросов Connection
+// Connection request queue item
 public class Request
 {
     public byte[] Bytes;
