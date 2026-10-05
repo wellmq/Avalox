@@ -14,7 +14,23 @@
 
 🌐 **English** • [Русский](README.ru.md)
 
-[Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#-architecture) • [Network Protocol](#-network-protocol) • [Getting Started](#-getting-started) • [License](#-license)
+[Screenshots](#-screenshots) • [Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#-architecture) • [Network Protocol](#-network-protocol) • [Getting Started](#-getting-started) • [License](#-license)
+
+</div>
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+### Main Chat Interface
+<img src="Previews/chat_page_preview.png" width="850" alt="Avalox Chat Preview" />
+
+<br/><br/>
+
+### Authentication & Server Connection
+<img src="Previews/login_page_preview.png" width="850" alt="Avalox Login Preview" />
 
 </div>
 
@@ -53,6 +69,7 @@
 ```
 Avalox/
 ├── Assets/                 # Application icon (PNG / multi-resolution ICO)
+├── Previews/               # Interface screenshots
 ├── Models/                 # DTOs and network models
 │   ├── ChatPreview.cs      # Sidebar chat preview model
 │   ├── Connection.cs       # Channel-based async TCP client
